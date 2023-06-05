@@ -1,3 +1,4 @@
+const fs = require('fs');
 const readline = require('readline');
 
 const datos = readline.createInterface({
@@ -8,6 +9,7 @@ const datos = readline.createInterface({
 datos.question('Nombre: ', function(name) {
   datos.question('Apellido: ', function(surename) {
     datos.question('Edad: ', function(age) {
+      datos.close();
       
       const persona = {
         name,
