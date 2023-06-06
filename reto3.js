@@ -1,4 +1,4 @@
-const fs = require('fs');
+const fs = require('fs/promises');
 const readline = require('readline');
 
 const datos = readline.createInterface({
@@ -6,9 +6,9 @@ const datos = readline.createInterface({
   output: process.stdout
 });
 
-datos.question('Nombre: ', function(name) {
-  datos.question('Apellido: ', function(surename) {
-    datos.question('Edad: ', function(age) {
+datos.question('Nombre: ', async function(name) {
+  datos.question('Apellido: ', async function(surename) {
+    datos.question('Edad: ', async function(age) {
       datos.close();
       
       const persona = {
@@ -17,11 +17,9 @@ datos.question('Nombre: ', function(name) {
         age: parseInt(age)
       };
 
-      fs.writeFileSync('datos.json', JSON.stringify(persona), 'utf8');
-
-      const datosLeido = JSON.parse(fs.readFileSync('datos.json', 'utf8'));
-
-      console.log('Persona:', datosLeido);
+      await fs.writeFile('datos.json', JSON.stringify(persona), 'utf8');
+      const datosLeidos = await fs.readFile('datos.json', 'utf8');
+      console.log('Persona:', JSON.parse(datosLeidos));
     });
   });
 });
