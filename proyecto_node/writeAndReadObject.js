@@ -6,15 +6,19 @@ const persona = {
   age: 30
 };
 
-function writeAndRead(persona) {
+async function writeAndRead(persona) {
+  try {
 
-    fs.writeFileSync('datos.json', JSON.stringify(persona), 'utf8');
-    
-    const leerDatos = JSON.parse(fs.readFileSync('datos.json', 'utf8'));
-    
-    console.log('Persona:', leerDatos);
+    await fs.promises.writeFile('datos.json', JSON.stringify(persona), 'utf8');
+    const datosLeidos = await fs.promises.readFile('datos.json', 'utf8');
+    console.log('Persona:', JSON.parse(datosLeidos));
+
+  } catch (error) {
+
+    console.error('Error:', error);
+  }
 }
 
-writeAndRead(persona);
+// writeAndRead(persona);
 
 module.exports = { writeAndRead };
