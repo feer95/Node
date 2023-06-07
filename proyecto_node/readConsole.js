@@ -1,34 +1,44 @@
-const fs = require('fs');
+const fs = require('fs/promises');
 const readline = require('readline');
 
-async function readConsole(callback) {
-  const datos = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-  });
+function readConsole() {
+  function pregunta(pregunta) {
+    return new Promise((resolve, reject) => {
+      const datos = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
+      });
 
-  datos.question('Nombre: ', async function(name) {
-    datos.question('Apellido: ',async function(surename) {
-      datos.question('Edad: ', async function(age) {
+      datos.question(pregunta, function(resp) {
         datos.close();
-
-        const persona = {
-          name,
-          surename,
-          age: parseInt(age)
-        };
-
-        await fs.promises.writeFile('datos.json', JSON.stringify(persona), 'utf8');
-        const datosLeidos = await fs.promises.readFile('datos.json', 'utf8');
-        const personaLeida = JSON.parse(datosLeidos);
-
-        callback(personaLeida);
-        return console.log('Persona:', personaLeida);
+        resolve(resp);
       });
     });
-  });
+  }
+
+  let persona = {};
+
+  pregunta('Nombre: ')
+    .then(resp => {
+      persona.nombre = resp;
+      return pregunta('Apellido: ');
+    })
+    .then(resp => {
+      persona.apellido = resp;
+      return pregunta('Edad: ');
+    })
+    .then(resp => {
+      persona.edad = parseInt(resp);
+      return fs.writeFile('datos.json', JSON.stringify(persona));
+    })
+    .then(() => fs.readFile('datos.json', 'utf8'))
+    .then(datos => {
+      console.log('Persona:', JSON.parse(datos));
+    })
+    .catch(error => {
+      console.log('Error:', error);
+    });
 }
 
-// readConsole();
+readConsole();
 module.exports = { readConsole };
-
