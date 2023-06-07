@@ -17,22 +17,22 @@ function obtenerDatos() {
     });
   }
 
-  pregunta('Nombre: ')
-    .then(name => pregunta('Apellido: ')
-      .then(surname => pregunta('Edad: ')
-        .then(age => {
-          const persona = {
-            name,
-            surname,
-            age
-          };
+  let persona = {};
 
-          return fs.writeFile('datos.json', JSON.stringify(persona));
-        })
-      )
-    )
+  pregunta('Nombre: ')
+    .then(resp => {
+      persona.nombre = resp;
+      return pregunta('Apellido: ');
+    })
+    .then(resp => {
+      persona.apellido = resp;
+      return pregunta('Edad: ');
+    })
+    .then(resp => {
+      persona.edad = parseInt(resp);
+      return fs.writeFile('datos.json', JSON.stringify(persona));
+    })
     .then(() => fs.readFile('datos.json', 'utf8'))
-    
     .then(datos => {
       console.log('Persona:', JSON.parse(datos));
     })
