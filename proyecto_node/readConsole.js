@@ -1,44 +1,40 @@
-const fs = require('fs/promises');
+const fs = require('fs');
 const readline = require('readline');
 
 function readConsole() {
-  function pregunta(pregunta) {
-    return new Promise((resolve, reject) => {
-      const datos = readline.createInterface({
-        input: process.stdin,
-        output: process.stdout
-      });
+  function pregunta(pregunta, callback) {
+    const datos = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout
+    });
 
-      datos.question(pregunta, function(resp) {
-        datos.close();
-        resolve(resp);
-      });
+    datos.question(pregunta, function(resp) {
+      datos.close();
+      callback(resp);
     });
   }
 
   let persona = {};
 
-  pregunta('Nombre: ')
-    .then(resp => {
-      persona.nombre = resp;
-      return pregunta('Apellido: ');
-    })
-    .then(resp => {
+  pregunta('Nombre: ', function(resp) {
+    persona.nombre = resp;
+    pregunta('Apellido: ', function(resp) {
       persona.apellido = resp;
-      return pregunta('Edad: ');
-    })
-    .then(resp => {
-      persona.edad = parseInt(resp);
-      return fs.writeFile('datos.json', JSON.stringify(persona));
-    })
-    .then(() => fs.readFile('datos.json', 'utf8'))
-    .then(datos => {
-      console.log('Persona:', JSON.parse(datos));
-    })
-    .catch(error => {
-      console.log('Error:', error);
+      pregunta('Edad: ', function(resp) {
+        persona.edad = parseInt(resp);
+        fs.writeFile('datos.json', JSON.stringify(persona), function(err) {
+          if (err) {
+            console.error('Error al escribir el archivo:', err);
+          } else {
+            fs.readFile('datos.json', 'utf8', function(err, datos) {
+            console.log('Persona:', JSON.parse(datos));             
+            });
+          }
+        });
+      });
     });
+  });
 }
 
-readConsole();
+// readConsole();
 module.exports = { readConsole };

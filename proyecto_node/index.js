@@ -7,6 +7,6 @@ const persona1 = {
   age: 30
 };
 
-readConsole(function(persona) {
+readConsole(function() {
   writeAndRead(persona1);
 });
