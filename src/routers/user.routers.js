@@ -19,17 +19,17 @@ router.get('/bye', usersCtrl.getChao);
 router.get("/usuario", usersCtrl.getUser);
 
 // Reto 2
-router.get('/libro', bookCtrl.getBook);
-router.post('/libro', bookCtrl.createBook);
-router.put('/libro', bookCtrl.updateBook);
-router.delete('/libro', bookCtrl.deleteBook);
+router.get('/book', bookCtrl.getBook);
+router.post('/book', bookCtrl.createBook);
+router.put('/book', bookCtrl.updateBook);
+router.delete('/book', bookCtrl.deleteBook);
 
 // Reto 3
-router.get('/libros', arrCtrl.getBooks);
-router.get('/libros/id', arrCtrl.getBooksId);
-router.post('/libros', arrCtrl.createBooks);
-router.put('/libros', arrCtrl.updateBooks);
-router.delete('/libros', arrCtrl.deleteBooks);
+router.get('/books', arrCtrl.getBooks);
+router.get('/books?id=5', arrCtrl.getBooksId);
+router.post('/books', arrCtrl.createBooks);
+router.put('/books', arrCtrl.updateBooks);
+router.delete('/books', arrCtrl.deleteBooks);
 
 module.exports = router;
 
