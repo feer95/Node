@@ -3,8 +3,7 @@ const Book = require('../models/bookModel.js');
 
 // RETO 2 ======================
 
-let libroActual = 
-{
+let libroActual = {
     title: 'Libro 1',
     genre: '1',
     author: 'Autor 1',
@@ -14,63 +13,39 @@ let libroActual =
     id_user: 1
 };
 
-let arrLib = [];
-
 function getBook(request, response) 
 {
-    let respuesta = { codigo: 200, Libro: libroActual };
+    let respuesta = { codigo: 200, libro: libroActual }; 
     response.send(respuesta);
 }
 
-
 function createBook(request, response) 
 {
-    let nuevoLibro = request.query;
-    arrLib.push(nuevoLibro);
-    let respuesta = {ok: true, message: 'Creado', Libros: arrLib};
+    let nuevoLibro = request.body; 
+    libroActual = nuevoLibro; 
+    let respuesta = { ok: true, message: 'Creado', libro: libroActual };
     response.send(respuesta);
 }
 
 function updateBook(request, response) 
-{ 
-    let libroEditado = request.query;
-    let libroEncontrado = arrLib.filter((book) => book.id === libroEditado.id_book);
-    let respuesta;
-
-    if (libroEncontrado.length > 0) 
-    {
-        let cambio = arrLib.findIndex(book => book.id_book === libroEditado.id_book);
-        arrLib.splice(cambio, 1, libroEditado);
-        respuesta = { ok: true, Libros: arrLib };
-    } 
-    else 
-    {
-        respuesta = { ok: false, mensaje: "Error, libro para editar no encontrado" };
+{
+    let libroEditado = request.body;
+    if (libroActual.id_book === libroEditado.id_book) {
+        libroActual = libroEditado;
+        let respuesta = { ok: true, libro: libroActual, message:"Libro editado!" };
+        response.send(respuesta);
+    } else {
+        let respuesta = { ok: false, message: "Error, libro para editar no encontrado" };
+        response.send(respuesta);
     }
-    response.send(respuesta);
 }
-  
 
 function deleteBook(request, response) 
 {
-    let libroFuera = request.query.id;
-    let libroEncontrado = arrLib.filter((book) => book.id === libroFuera);
-    let respuesta;
-    
-    if (libroEncontrado.length > 0) 
-    {
-      let cambio = arrLib.findIndex(book => book.title === libroFuera);
-      arrLib.splice(cambio, 1);
-      respuesta = { ok: true, seBorro: libroFuera, message:'Se borró!' };
-    } 
-    else 
-    {
-      respuesta = { ok: false, mensaje: "Error, libro para borrar no encontrado" };
-    }
+    libroActual = null; 
+    let respuesta = { ok: true, message: 'Se borró!' }; 
     response.send(respuesta);
 }
-module.exports = {getBook, createBook, updateBook, deleteBook};
 
-
-
+module.exports = { getBook, createBook, updateBook, deleteBook };
 
