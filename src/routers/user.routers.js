@@ -26,7 +26,7 @@ router.delete('/book', bookCtrl.deleteBook);
 
 // Reto 3
 router.get('/books', arrCtrl.getBooks);
-router.get('/books?id=5', arrCtrl.getBooksId);
+router.get('/booksFind', arrCtrl.getBooksId);
 router.post('/books', arrCtrl.createBooks);
 router.put('/books', arrCtrl.updateBooks);
 router.delete('/books', arrCtrl.deleteBooks);

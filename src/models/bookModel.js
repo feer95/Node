@@ -1,14 +1,14 @@
 class Book 
 {
-  constructor(id_book = 0, id_user = 0, title, type, author, price, photo) 
+  constructor(title, genre, author, price, imageUrl, id_book, id_user) 
   {
-    this.id_book = id_book;
-    this.id_user = id_user;
     this.title = title;
-    this.type = type;
+    this.genre = genre;
     this.author = author;
     this.price = price;
-    this.photo = photo;
+    this.imageUrl = imageUrl;
+    this.id_book = id_book;
+    this.id_user = id_user;
   }
 }
 module.exports = Book;

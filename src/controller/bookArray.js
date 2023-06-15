@@ -1,19 +1,14 @@
 const router = require("../app");
 const Book = require('../models/bookModel.js');
 
-// RETO 3 ==========================================================
+// // RETO 3 ==========================================================
 
-const books = [
-    new Book(1, 1, 'Libro 1', 'Blanda', 'Autor 1', 10.99, '/'),
-    new Book(2, 2, 'Libro 2', 'Dura', 'Autor 2', 12.99, '/'),
-    new Book(3, 3, 'Libro 3', 'Blanda', 'Autor 3', 14.99, '/'),
-    new Book(4, 4, 'Libro 4', 'Blanda', 'Autor 4', 16.99, '/'),
-    new Book(5, 5, 'Libro 5', 'Dura', 'Autor 5', 18.99, '/'),
-    new Book(6, 6, 'Libro 6', 'Blanda', 'Autor 6', 20.99, '/'),
-    new Book(7, 7, 'Libro 7', 'Dura', 'Autor 7', 22.99, '/'),
-    new Book(8, 8, 'Libro 8', 'Blanda', 'Autor 8', 24.99, '/'),
-    new Book(9, 9, 'Libro 9', 'Dura', 'Autor 9', 26.99, '/'),
-    new Book(10, 10, 'Libro 10', 'Blanda', 'Autor 10', 28.99, '/')
+const books = 
+[
+    new Book('Libro 1', 'Blanda', 'Autor 1', 10.99, '/', 1, 1),
+    new Book('Libro 2', 'Dura', 'Autor 2', 12.99, '/', 2, 2),
+    new Book('Libro 3', 'Blanda', 'Autor 3', 14.99, '/', 3, 3),
+    new Book('Libro 4', 'Blanda', 'Autor 4', 16.99, '/', 4, 4),
 ];
 
 function getBooks(request, response) 
@@ -24,72 +19,98 @@ function getBooks(request, response)
 
 function getBooksId(request, response) 
 {
-    const bookId = request.params.id;
-    const libroEncontrado = books.find((book) => book.id === bookId);
-    let respuesta;
+    let libroEncontrado = null;
+    const idLibro = request.body.id_book;
 
-    if (libroEncontrado) 
+    let i = 0;
+    while (i < books.length && libroEncontrado === null) 
     {
-        respuesta = { codigo: 200, book: libroEncontrado, message: "Encontrado!" };
+        if (books[i].id_book == idLibro) {
+            libroEncontrado = books[i];
+        }
+        i++;
+    }
+
+    if (libroEncontrado != null) 
+    {
+        respuesta = { codigo: 200, message: "Encontrado!", data: libroEncontrado };
         response.send(respuesta);
     } 
     else 
     {
-        respuesta = { codigo: 404, message: 'No existe!' };
+        respuesta = { codigo: 404, message: 'No existe!', data: libroEncontrado };
         response.send(respuesta);
     }
 }
 
 function createBooks(request, response) 
 {
-  let newBook = request.body;
-  books.push(newBook);
-  let respuesta = {ok: true, message: "Añadido!"};
-  response.send(respuesta);
-}
-
-function updateBooks(request, response) {
-    let libroEditado = request.body;
-    let libroEncontrado = books.find((book) => book.id === libroEditado.id);
-
-    let respuesta;
-
-    if (libroEncontrado) 
+    let newBook = new Book(request.body.title, request.body.genre, request.body.author, request.body.price, request.body.imageUrl, request.body.id_book, request.body.id_user);
+    if (newBook != null) 
     {
-        libroEncontrado.title = libroEditado.title;
-        libroEncontrado.genre = libroEditado.genre;
-        libroEncontrado.author = libroEditado.author;
-        libroEncontrado.price = libroEditado.price;
-        libroEncontrado.imageUrl = libroEditado.imageUrl;
-        
-        respuesta = { ok: true, message: "Editado!" };
+        books.push(newBook);
+        let respuesta = {error: true, message: "Añadido!", data: books};
+        response.send(respuesta);
     } 
     else 
     {
-        respuesta = { ok: false, message: "No lo encontramos!" };
+        let respuesta = {error: false, message: "No añadido!", data: books};
+        response.send(respuesta);
+    }
+    
+}
+
+function updateBooks(request, response) 
+{
+    let idLibro = request.body.id_book;
+    let libroEncontrado = null;
+
+    let i = 0;
+    while (i < books.length && libroEncontrado === null) 
+    {
+        if (books[i].id_book === idLibro) 
+        {
+            libroEncontrado = books[i];
+        }
+        i++;
     }
 
-    response.send(respuesta);
+    if (libroEncontrado !== null) 
+    {
+        libroEncontrado.title = request.body.title;
+        libroEncontrado.format = request.body.format;
+        libroEncontrado.author = request.body.author;
+        libroEncontrado.price = request.body.price;
+        libroEncontrado.url = request.body.url;
+        libroEncontrado.id_author = request.body.id_author;
+
+        respuesta = { error: true, message: "Editado!", data: books };
+        response.send(respuesta);
+    } 
+    else 
+    {
+        respuesta = { error: false, message: "No lo encontramos!", data: books };
+        response.send(respuesta);
+    }
 }
 
 function deleteBooks(request, response) 
 {
-    let libroFuera = request.params.id;
-    let libroEncontradoIndex = books.findIndex(book => book.id === libroFuera);
-
-    let respuesta;
-
+    let libroFuera = request.body.id_book;
+    let libroEncontradoIndex = books.findIndex(book => book.id_book === libroFuera);
+  
     if (libroEncontradoIndex >= 0) 
     {
-        books.splice(libroEncontradoIndex, 1);
-        respuesta = { ok: true, Eliminado: libroFuera, message: "Eliminado!" };
+      books.splice(libroEncontradoIndex, 1);
+      respuesta = { error: true, message: "Eliminado!", data: books };
     } 
     else 
     {
-        respuesta = { ok: false, message: "No lo encontramos!" };
+      respuesta = { error: false, message: "No lo encontramos!", data: books };
     }
-
+  
     response.send(respuesta);
 }
+  
 
-module.exports = { getBooks, getBooksId, createBooks, updateBooks, deleteBooks };
+module.exports = { getBooks, getBooksId, createBooks, updateBooks, deleteBooks};
