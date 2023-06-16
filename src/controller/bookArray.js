@@ -15,33 +15,24 @@ function getBooks(request, response)
 {
     let respuesta = {codigo: 200, books: books};
     response.send(respuesta);
-}
+};
 
-function getBooksId(request, response) 
+function getBooksId(request, response) // CORRECCION CON FIND
 {
-    let libroEncontrado = null;
-    const idLibro = request.body.id_book;
+    let idLibro = request.params.id_book;
+    let libroEncontrado = books.find((libro) => libro.id_book == idLibro);
 
-    let i = 0;
-    while (i < books.length && libroEncontrado === null) 
+    if (idLibro != null) 
     {
-        if (books[i].id_book == idLibro) {
-            libroEncontrado = books[i];
-        }
-        i++;
-    }
-
-    if (libroEncontrado != null) 
-    {
-        respuesta = { codigo: 200, message: "Encontrado!", data: libroEncontrado };
+        respuesta = { error: true, message: "Encontrado!", data: libroEncontrado };
         response.send(respuesta);
     } 
     else 
     {
-        respuesta = { codigo: 404, message: 'No existe!', data: libroEncontrado };
+        respuesta = { error: false, message: 'No existe!', data: libroEncontrado };
         response.send(respuesta);
     }
-}
+};
 
 function createBooks(request, response) 
 {
@@ -58,31 +49,21 @@ function createBooks(request, response)
         response.send(respuesta);
     }
     
-}
+};
 
 function updateBooks(request, response) 
 {
     let idLibro = request.body.id_book;
-    let libroEncontrado = null;
+    let i = books.findIndex((libro) => libro.id_book === idLibro);
 
-    let i = 0;
-    while (i < books.length && libroEncontrado === null) 
+    if (idLibro != null) 
     {
-        if (books[i].id_book === idLibro) 
-        {
-            libroEncontrado = books[i];
-        }
-        i++;
-    }
-
-    if (libroEncontrado !== null) 
-    {
-        libroEncontrado.title = request.body.title;
-        libroEncontrado.format = request.body.format;
-        libroEncontrado.author = request.body.author;
-        libroEncontrado.price = request.body.price;
-        libroEncontrado.url = request.body.url;
-        libroEncontrado.id_author = request.body.id_author;
+        books[i].title = request.body.title;
+        books[i].format = request.body.format;
+        books[i].author = request.body.author;
+        books[i].price = request.body.price;
+        books[i].url = request.body.url;
+        books[i].id_author = request.body.id_author;
 
         respuesta = { error: true, message: "Editado!", data: books };
         response.send(respuesta);
@@ -92,7 +73,8 @@ function updateBooks(request, response)
         respuesta = { error: false, message: "No lo encontramos!", data: books };
         response.send(respuesta);
     }
-}
+};
+
 
 function deleteBooks(request, response) 
 {
