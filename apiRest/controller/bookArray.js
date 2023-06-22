@@ -5,10 +5,10 @@ const Book = require('../models/bookModel.js');
 
 const books = 
 [
-    new Book('Libro 1', 'Blanda', 'Autor 1', 10.99, '/', 1, 1),
-    new Book('Libro 2', 'Dura', 'Autor 2', 12.99, '/', 2, 2),
-    new Book('Libro 3', 'Blanda', 'Autor 3', 14.99, '/', 3, 3),
-    new Book('Libro 4', 'Blanda', 'Autor 4', 16.99, '/', 4, 4),
+    new Book(1, 1, 'Libro 1', 'Blanda', 'Autor 1', 10.99, 'https://marketplace.canva.com/EAFEL6G6JSU/1/0/1003w/canva-portada-de-libro-pdf-electr%C3%B3nico-digital-silueta-persona-rosa-azul-oS2hyQNbxmM.jpg'),
+    new Book(2, 2, 'Libro 2', 'Dura', 'Autor 2', 12.99, 'https://marketplace.canva.com/EAFEL6G6JSU/1/0/1003w/canva-portada-de-libro-pdf-electr%C3%B3nico-digital-silueta-persona-rosa-azul-oS2hyQNbxmM.jpg'),
+    new Book(3, 3, 'Libro 3', 'Blanda', 'Autor 3', 14.99, 'https://marketplace.canva.com/EAFEL6G6JSU/1/0/1003w/canva-portada-de-libro-pdf-electr%C3%B3nico-digital-silueta-persona-rosa-azul-oS2hyQNbxmM.jpg'),
+    new Book(4, 4, 'Libro 4', 'Blanda', 'Autor 4', 16.99, 'https://marketplace.canva.com/EAFEL6G6JSU/1/0/1003w/canva-portada-de-libro-pdf-electr%C3%B3nico-digital-silueta-persona-rosa-azul-oS2hyQNbxmM.jpg'),
 ];
 
 function getAll(request, response) 
@@ -17,7 +17,7 @@ function getAll(request, response)
     response.send(respuesta);
 };
 
-function getBooksId(request, response) // CORRECCION CON FIND
+function getBooksId(request, response) 
 {
     let idLibro = request.params.id_book;
     let libroEncontrado = books.find((libro) => libro.id_book == idLibro);
@@ -36,7 +36,7 @@ function getBooksId(request, response) // CORRECCION CON FIND
 
 function createBooks(request, response) 
 {
-    let newBook = new Book(request.body.title, request.body.genre, request.body.author, request.body.price, request.body.imageUrl, request.body.id_book, request.body.id_user);
+    let newBook = new Book(request.body.id_book, request.body.id_user ,request.body.title, request.body.type, request.body.author, request.body.price, request.body.photo);
     if (newBook != null) 
     {
         books.push(newBook);
@@ -54,16 +54,16 @@ function createBooks(request, response)
 function updateBooks(request, response) 
 {
     let idLibro = request.body.id_book;
-    let i = books.findIndex((libro) => libro.id_book === idLibro);
+    let i = books.findIndex((book) => book.id_book === idLibro);
 
     if (idLibro != null) 
     {
         books[i].title = request.body.title;
-        books[i].format = request.body.format;
+        books[i].type = request.body.type;
         books[i].author = request.body.author;
         books[i].price = request.body.price;
-        books[i].url = request.body.url;
-        books[i].id_author = request.body.id_author;
+        books[i].photo = request.body.photo;
+        books[i].id_user = request.body.id_user;
 
         respuesta = { error: true, message: "Editado!", data: books };
         response.send(respuesta);
